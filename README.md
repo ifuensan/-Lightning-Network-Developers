@@ -500,3 +500,10 @@ Join the #dev-help channel on our [Community Slack](https://join.slack.com/t/lig
 Join IRC: [Irc](https://webchat.freenode.net/?channels=lnd)
 
 # Etapa 1: Configurando un cluster local
+## Introducción
+
+En esta etapa del tutorial, aprenderemos cómo configurar un grupo local de nodos Alice, Bob y Charlie, hacer que se comuniquen entre sí, configurar canales y enrutar pagos entre sí. También estableceremos una comprensión básica de los diferentes componentes que deben trabajar juntos como parte del desarrollo de lnd.
+
+Este tutorial asume que ha completado la instalación de Go, btcd y lnd en simnet. De lo contrario, consulte las instrucciones de instalación. Tenga en cuenta que para los fines de este tutorial no es necesario sincronizar testnet y la última sección de las instrucciones de instalación que deberá completar es 'Instalación de btcd'.
+
+El esquema será el siguiente. Tenga en cuenta que puede ampliar fácilmente esta red para incluir nodos adicionales David, Eve, etc. simplemente ejecutando más instancias lnd locales.
