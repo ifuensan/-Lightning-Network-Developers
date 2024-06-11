@@ -499,4 +499,4 @@ In the future, you can try running through this workflow on testnet instead of s
 Join the #dev-help channel on our [Community Slack](https://join.slack.com/t/lightningcommunity/shared_invite/enQtMzQ0OTQyNjE5NjU1LWRiMGNmOTZiNzU0MTVmYzc1ZGFkZTUyNzUwOGJjMjYwNWRkNWQzZWE3MTkwZjdjZGE5ZGNiNGVkMzI2MDU4ZTE)
 Join IRC: [Irc](https://webchat.freenode.net/?channels=lnd)
 
-#Etapa 1: Configurando un cluster local
+# Etapa 1: Configurando un cluster local
