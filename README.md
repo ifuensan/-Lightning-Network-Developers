@@ -42,7 +42,7 @@ We will also be using simnet instead of testnet. Simnet is a development/test ne
 
 Developing on lnd can be quite complex since there are many more moving pieces, so to simplify that process, we will walk through a recommended workflow.
 
-Running btcd
+### Running btcd
 
 Let’s start by running btcd, if you don’t have it up already. Open up a new terminal window, ensure you have your $GOPATH set, and run:
 
@@ -56,7 +56,7 @@ Breaking down the components:
     --simnet specifies that we are using the simnet network. This can be changed to --testnet, or omitted entirely to connect to the actual Bitcoin / Litecoin network.
     --rpcuser and rpcpass sets a default password for authenticating to the btcd instance.
 
-Starting lnd (Alice’s node)
+### Starting lnd (Alice’s node)
 
 Now, let’s set up the three lnd nodes. To keep things as clean and separate as possible, open up a new terminal window, ensure you have $GOPATH set and $GOPATH/bin in your PATH, and create a new directory under $GOPATH called dev that will represent our development space. We will create separate folders to store the state for alice, bob, and charlie, and run all of our lnd nodes on different localhost ports instead of using Docker to make our networking a bit easier.
 ```
@@ -89,34 +89,39 @@ $ tree $GOPATH -L 2
 ```
 
 Start up the Alice node from within the alice directory:
-
+```
 cd $GOPATH/dev/alice
 alice$ lnd --rpclisten=localhost:10001 --listen=localhost:10011 --restlisten=localhost:8001 --datadir=data --logdir=log --debuglevel=info --bitcoin.simnet --bitcoin.active --bitcoin.node=btcd --btcd.rpcuser=kek --btcd.rpcpass=kek 
+```
+
 The Alice node should now be running and displaying output ending with a line beginning with “Waiting for wallet encryption password.”
 
 Breaking down the components:
 
---rpclisten: The host:port to listen for the RPC server. This is the primary way an application will communicate with lnd
---listen: The host:port to listen on for incoming P2P connections. This is at the networking level, and is distinct from the Lightning channel networks and Bitcoin/Litcoin network itself.
---restlisten: The host:port exposing a REST api for interacting with lnd over HTTP. For example, you can get Alice’s channel balance by making a GET request to localhost:8001/v1/channels. This is not needed for this tutorial, but you can see some examples here.
---datadir: The directory that lnd’s data will be stored inside
---logdir: The directory to log output.
---debuglevel: The logging level for all subsystems. Can be set to trace, debug, info, warn, error, critical.
---bitcoin.simnet: Specifies whether to use simnet or testnet
---bitcoin.active: Specifies that bitcoin is active. Can also include --litecoin.active to activate Litecoin.
---bitcoin.node=btcd: Use the btcd full node to interface with the blockchain. Note that when using Litecoin, the option is --litecoin.node=btcd.
---btcd.rpcuser and --btcd.rpcpass: The username and password for the btcd instance. Note that when using Litecoin, the options are --ltcd.rpcuser and --ltcd.rpcpass.
-Starting Bob’s node and Charlie’s node
+`--rpclisten`: The host:port to listen for the RPC server. This is the primary way an application will communicate with lnd
+`--listen`: The host:port to listen on for incoming P2P connections. This is at the networking level, and is distinct from the Lightning channel networks and Bitcoin/Litcoin network itself.
+`--restlisten`: The host:port exposing a REST api for interacting with lnd over HTTP. For example, you can get Alice’s channel balance by making a GET request to localhost:8001/v1/channels. This is not needed for this tutorial, but you can see some examples here.
+`--datadir`: The directory that lnd’s data will be stored inside
+`--logdir`: The directory to log output.
+`--debuglevel`: The logging level for all subsystems. Can be set to trace, debug, info, warn, error, critical.
+`--bitcoin.simnet`: Specifies whether to use simnet or testnet
+`--bitcoin.active`: Specifies that bitcoin is active. Can also include `--litecoin.active` to activate Litecoin.
+`--bitcoin.node=btcd`: Use the btcd full node to interface with the blockchain. Note that when using Litecoin, the option is `--litecoin.node=btcd`.
+`--btcd.rpcuser` and `--btcd.rpcpass`: The username and password for the btcd instance. Note that when using Litecoin, the options are `--ltcd.rpcuser` and `--ltcd.rpcpass`.
+
+## Starting Bob’s node and Charlie’s node
 Just as we did with Alice, start up the Bob node from within the bob directory, and the Charlie node from within the charlie directory. Doing so will configure the datadir and logdir to be in separate locations so that there is never a conflict.
 
-Keep in mind that for each additional terminal window you set, you will need to set $GOPATH and include $GOPATH/bin in your PATH. Consider creating a setup script that includes the following lines:
+Keep in mind that for each additional terminal window you set, you will need to set `$GOPATH` and include `$GOPATH/bin` in your PATH. Consider creating a setup script that includes the following lines:
 
+```
 export GOPATH=~/gocode # if you exactly followed the install guide
 export PATH=$PATH:$GOPATH/bin
+```
 and run it every time you start a new terminal window working on lnd.
 
 Run Bob and Charlie:
-
+```
 # In a new terminal window
 cd $GOPATH/dev/bob
 bob$ lnd --rpclisten=localhost:10002 --listen=localhost:10012 --restlisten=localhost:8002 --datadir=data --logdir=log --debuglevel=info --bitcoin.simnet --bitcoin.active --bitcoin.node=btcd --btcd.rpcuser=kek --btcd.rpcpass=kek 
@@ -124,13 +129,15 @@ bob$ lnd --rpclisten=localhost:10002 --listen=localhost:10012 --restlisten=local
 # In another terminal window
 cd $GOPATH/dev/charlie
 charlie$ lnd --rpclisten=localhost:10003 --listen=localhost:10013 --restlisten=localhost:8003 --datadir=data --logdir=log --debuglevel=info --bitcoin.simnet --bitcoin.active --bitcoin.node=btcd --btcd.rpcuser=kek --btcd.rpcpass=kek
-Configuring lnd.conf
-To skip having to type out a bunch of flags on the command line every time, we can instead modify our lnd.conf, and the arguments specified therein will be loaded into lnd automatically. Any additional configuration added as a command line argument will be applied after reading from lnd.conf, and will overwrite the lnd.conf option if applicable.
+```
+## Configuring lnd.conf
+To skip having to type out a bunch of flags on the command line every time, we can instead modify our `lnd.conf`, and the arguments specified therein will be loaded into lnd automatically. Any additional configuration added as a command line argument will be applied after reading from lnd.conf, and will overwrite the lnd.conf option if applicable.
 
-On MacOS, lnd.conf is located at: /Users/[username]/Library/Application\ Support/Lnd/lnd.conf
-On Linux: ~/.lnd/lnd.conf
-Here is an example lnd.conf that can save us from re-specifying a bunch of command line options:
+On MacOS, `lnd.conf` is located at: `/Users/[username]/Library/Application\ Support/Lnd/lnd.conf`
+On Linux: `~/.lnd/lnd.conf`
+Here is an example `lnd.conf` that can save us from re-specifying a bunch of command line options:
 
+```
 [Application Options]
 datadir=data
 logdir=log
@@ -144,11 +151,14 @@ bitcoin.node=btcd
 [btcd]
 btcd.rpcuser=kek
 btcd.rpcpass=kek
-Now, when we start nodes, we only have to type
+```
 
+Now, when we start nodes, we only have to type
+```
 alice$ lnd --rpclisten=localhost:10001 --listen=localhost:10011 --restlisten=localhost:8001
 bob$ lnd --rpclisten=localhost:10002 --listen=localhost:10012 --restlisten=localhost:8002
 charlie$ lnd --rpclisten=localhost:10003 --listen=localhost:10013 --restlisten=localhost:8003
+```
 etc.
 
 Working with lncli and authentication
