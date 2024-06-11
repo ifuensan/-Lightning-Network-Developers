@@ -244,18 +244,19 @@ That’s a lot of configuration! At this point, we’ve generated onchain addres
 
 Quit btcd and re-run it, setting Alice as the recipient of all mining rewards:
 
-btcd --simnet --txindex --rpcuser=kek --rpcpass=kek --miningaddr=<ALICE_ADDRESS>
+`btcd --simnet --txindex --rpcuser=kek --rpcpass=kek --miningaddr=<ALICE_ADDRESS>`
 Generate 400 blocks, so that Alice gets the reward. We need at least 100 blocks because coinbase funds can’t be spent until after 100 confirmations, and we need about 300 to activate segwit. In a new window with $GOPATH and $PATH set:
 
-alice$ btcctl --simnet --rpcuser=kek --rpcpass=kek generate 400
+`alice$ btcctl --simnet --rpcuser=kek --rpcpass=kek generate 400`
 Check that segwit is active:
 
-btcctl --simnet --rpcuser=kek --rpcpass=kek getblockchaininfo | grep -A 1 segwit
+`btcctl --simnet --rpcuser=kek --rpcpass=kek getblockchaininfo | grep -A 1 segwit`
 Check Alice’s wallet balance.
 
-alice$ lncli-alice walletbalance
+`alice$ lncli-alice walletbalance`
 It’s no fun if only Alice has money. Let’s give some to Charlie as well.
 
+```
 # Quit the btcd process that was previously started with Alice's mining address,
 # and then restart it with:
 btcd --txindex --simnet --rpcuser=kek --rpcpass=kek --miningaddr=<CHARLIE_ADDRESS>
@@ -265,11 +266,13 @@ btcctl --simnet --rpcuser=kek --rpcpass=kek generate 100
 
 # Check Charlie's balance
 charlie$ lncli-charlie walletbalance
-Creating the P2P Network
+```
+### Creating the P2P Network
 Now that Alice and Charlie have some simnet Bitcoin, let’s start connecting them together.
 
 Connect Alice to Bob:
 
+```
 # Get Bob's identity pubkey:
 bob$ lncli-bob getinfo
 {
@@ -296,10 +299,11 @@ alice$ lncli-alice connect <BOB_PUBKEY>@localhost:10012
 {
 
 }
-Notice that localhost:10012 corresponds to the --listen=localhost:10012 flag we set when starting the Bob lnd node.
+```
+Notice that `localhost:10012` corresponds to the `--listen=localhost:10012` flag we set when starting the Bob lnd node.
 
 Let’s check that Alice and Bob are now aware of each other.
-
+```
 # Check that Alice has added Bob as a peer:
 alice$ lncli-alice listpeers
 {
@@ -333,21 +337,24 @@ bob$ lncli-bob listpeers
         }
     ]
 }
+```
 Finish up the P2P network by connecting Bob to Charlie:
 
-charlie$ lncli-charlie connect <BOB_PUBKEY>@localhost:10012
-Setting up Lightning Network
+`charlie$ lncli-charlie connect <BOB_PUBKEY>@localhost:10012`
+
+### Setting up Lightning Network
 Before we can send payment, we will need to set up payment channels from Alice to Bob, and Bob to Charlie.
 
 First, let’s open the Alice<–>Bob channel.
 
-alice$ lncli-alice openchannel --node_key=<BOB_PUBKEY> --local_amt=1000000
---local_amt specifies the amount of money that Alice will commit to the channel. To see the full list of options, you can try lncli openchannel --help.
+`alice$ lncli-alice openchannel --node_key=<BOB_PUBKEY> --local_amt=1000000
+--local_amt` specifies the amount of money that Alice will commit to the channel. To see the full list of options, you can try lncli openchannel `--help`.
 We now need to mine six blocks so that the channel is considered valid:
 
-btcctl --simnet --rpcuser=kek --rpcpass=kek generate 6
+`btcctl --simnet --rpcuser=kek --rpcpass=kek generate 6`
 Check that Alice<–>Bob channel was created:
 
+```
 alice$ lncli-alice listchannels
 {
     "channels": [
@@ -373,19 +380,24 @@ alice$ lncli-alice listchannels
         }
     ]
 }
+```
+
 Sending single hop payments
 Finally, to the exciting part - sending payments! Let’s send a payment from Alice to Bob.
 
 First, Bob will need to generate an invoice:
 
+```
 bob$ lncli-bob addinvoice --amt=10000
 {
         "r_hash": "<a_random_rhash_value>",
         "pay_req": "<encoded_invoice>",
         "add_index": 1
 }
+```
 Send the payment from Alice to Bob:
 
+```
 alice$ lncli-alice sendpayment --pay_req=<encoded_invoice>
 {
 	"payment_error": "",
@@ -411,26 +423,33 @@ alice$ lncli-alice listchannels
 
 # Check that Bob's channel was credited with the payment amount:
 bob$ lncli-bob listchannels
-Multi-hop payments
+```
+## Multi-hop payments
 Now that we know how to send single-hop payments, sending multi hop payments is not that much more difficult. Let’s set up a channel from Bob<–>Charlie:
 
+```
 charlie$ lncli-charlie openchannel --node_key=<BOB_PUBKEY> --local_amt=800000 --push_amt=200000
 
 # Mine the channel funding tx
 btcctl --simnet --rpcuser=kek --rpcpass=kek generate 6
-Note that this time, we supplied the --push_amt argument, which specifies the amount of money we want the other party to have at the first channel state.
+```
+
+Note that this time, we supplied the `--push_amt` argument, which specifies the amount of money we want the other party to have at the first channel state.
 
 Let’s make a payment from Alice to Charlie by routing through Bob:
-
+```
 charlie$ lncli-charlie addinvoice --amt=10000
 alice$ lncli-alice sendpayment --pay_req=<encoded_invoice>
 
 # Check that Charlie's channel was credited with the payment amount (e.g. that
 # the `remote_balance` has been decremented by 10000)
 charlie$ lncli-charlie listchannels
-Closing channels
+```
+
+### Closing channels
 For practice, let’s try closing a channel. We will reopen it in the next stage of the tutorial.
 
+```
 alice$ lncli-alice listchannels
 {
     "channels": [
@@ -449,6 +468,7 @@ alice$ lncli-alice listchannels
         }
     ]
 }
+```
 The Channel point consists of two numbers separated by a colon, which uniquely identifies the channel. The first number is funding_txid and the second number is output_index.
 
 ```
@@ -471,9 +491,10 @@ At this point, you’ve learned how to work with btcd, btcctl, lnd, and lncli. I
 
 In the future, you can try running through this workflow on testnet instead of simnet, where you can interact with and send payments through the testnet Lightning Faucet node. For more information, see the “Connect to faucet lightning node” section in the Docker guide or check out the Lightning Network faucet repository.
 
-Navigation
-Proceed to Stage 2 - Web Client
-Return to main tutorial page
-Questions
-Join the #dev-help channel on our Community Slack
-Join IRC: Irc
+### Navigation
+[Proceed to Stage 2 - Web Client](https://dev.lightning.community/tutorial/02-web-client)
+[Return to main tutorial page](https://dev.lightning.community/tutorial/)
+
+### Questions
+Join the #dev-help channel on our [Community Slack](https://join.slack.com/t/lightningcommunity/shared_invite/enQtMzQ0OTQyNjE5NjU1LWRiMGNmOTZiNzU0MTVmYzc1ZGFkZTUyNzUwOGJjMjYwNWRkNWQzZWE3MTkwZjdjZGE5ZGNiNGVkMzI2MDU4ZTE)
+Join IRC: [Irc](https://webchat.freenode.net/?channels=lnd)
