@@ -8,6 +8,7 @@ This tutorial assumes you have completed installation of Go, btcd, and lnd on si
 
 The schema will be the following. Keep in mind that you can easily extend this network to include additional nodes David, Eve, etc. by simply running more local lnd instances.
 
+```
    (1)                        (1)                         (1)
 + ----- +                   + --- +                   + ------- +
 | Alice | <--- channel ---> | Bob | <--- channel ---> | Charlie |
@@ -19,6 +20,8 @@ The schema will be the following. Keep in mind that you can easily extend this n
                       + --------------- +
                       | BTC/LTC network | <--- (2)
                       + --------------- +
+
+```
 
 ## Understanding the components
 ### LND
@@ -65,7 +68,9 @@ cd dev
 # Create folders for each of our nodes
 mkdir alice bob charlie
 ```
+
 The directory structure should now look like this:
+
 ```
 $ tree $GOPATH -L 2
 
