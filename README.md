@@ -507,3 +507,51 @@ En esta etapa del tutorial, aprenderemos cómo configurar un grupo local de nodo
 Este tutorial asume que ha completado la instalación de Go, btcd y lnd en simnet. De lo contrario, consulte las instrucciones de instalación. Tenga en cuenta que para los fines de este tutorial no es necesario sincronizar testnet y la última sección de las instrucciones de instalación que deberá completar es 'Instalación de btcd'.
 
 El esquema será el siguiente. Tenga en cuenta que puede ampliar fácilmente esta red para incluir nodos adicionales David, Eve, etc. simplemente ejecutando más instancias lnd locales.
+
+```
+   (1)                        (1)                         (1)
++ ----- +                   + --- +                   + ------- +
+| Alice | <--- channel ---> | Bob | <--- channel ---> | Charlie |
++ ----- +                   + --- +                   + ------- +
+    |                          |                           |
+    |                          |                           |
+    + - - - -  - - - - - - - - + - - - - - - - - - - - - - +
+                               |
+                      + --------------- +
+                      | BTC/LTC network | <--- (2)
+                      + --------------- +
+
+```
+
+## Comprender los componentes
+### LND
+
+lnd es el componente principal con el que interactuaremos. lnd significa Lightning Network Daemon y maneja la apertura/cierre de canales, enrutamiento y envío de pagos, y administra todo el estado de Lightning Network que está separado de la propia red Bitcoin subyacente.
+
+Ejecutar un nodo lnd significa que está escuchando pagos, observando la cadena de bloques, etc. De forma predeterminada, está esperando la entrada del usuario.
+
+lncli es el cliente de línea de comando que se utiliza para interactuar con sus nodos lnd. Normalmente, cada nodo lnd se ejecutará en su propia ventana de terminal, de modo que pueda ver las salidas de sus registros. Por lo tanto, los comandos lncli se ejecutan desde una ventana de terminal diferente.
+### BTCD
+
+btcd represents the gateway that lnd nodes will use to interact with the Bitcoin / Litecoin network. lnd needs btcd for creating on-chain addresses or transactions, watching the blockchain for updates, and opening/closing channels. In our current schema, all three of the nodes are connected to the same btcd instance. In a more realistic scenario, each of the lnd nodes will be connected to their own instances of btcd or equivalent.
+
+We will also be using simnet instead of testnet. Simnet is a development/test network run locally that allows us to generate blocks at will, so we can avoid the time-consuming process of waiting for blocks to arrive for any on-chain functionality.
+
+## Setting up our environment
+
+Developing on lnd can be quite complex since there are many more moving pieces, so to simplify that process, we will walk through a recommended workflow.
+
+### Running btcd
+
+Let’s start by running btcd, if you don’t have it up already. Open up a new terminal window, ensure you have your $GOPATH set, and run:
+
+btcd --txindex --simnet --rpcuser=kek --rpcpass=kek
+
+(Note: this tutorial requires opening quite a few terminal windows. It may be convenient to use multiplexers such as tmux or screen if you’re familiar with them.)
+
+Breaking down the components:
+
+    --txindex is required so that the lnd client is able to query historical transactions from btcd.
+    --simnet specifies that we are using the simnet network. This can be changed to --testnet, or omitted entirely to connect to the actual Bitcoin / Litecoin network.
+    --rpcuser and rpcpass sets a default password for authenticating to the btcd instance.
+
