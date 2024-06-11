@@ -161,28 +161,34 @@ charlie$ lnd --rpclisten=localhost:10003 --listen=localhost:10013 --restlisten=l
 ```
 etc.
 
-Working with lncli and authentication
+### Working with lncli and authentication
 Now that we have our lnd nodes up and running, let’s interact with them! To control lnd we will need to use lncli, the command line interface.
 
-lnd uses macaroons for authentication to the rpc server. lncli typically looks for an admin.macaroon file in the Lnd home directory, but since we changed the location of our application data, we have to set --macaroonpath in the following command. To disable macaroons, pass the --no-macaroons flag into both lncli and lnd.
+lnd uses macaroons for authentication to the rpc server. lncli typically looks for an admin.macaroon file in the Lnd home directory, but since we changed the location of our application data, we have to set `--macaroonpath` in the following command. To disable macaroons, pass the `--no-macaroons` flag into both lncli and lnd.
 
-lnd allows you to encrypt your wallet with a passphrase and optionally encrypt your cipher seed passphrase as well. This can be turned off by passing --noencryptwallet into lnd or lnd.conf. We recommend going through this process at least once to familiarize yourself with the security and authentication features around lnd.
+lnd allows you to encrypt your wallet with a passphrase and optionally encrypt your cipher seed passphrase as well. This can be turned off by passing `--noencryptwallet` into `lnd` or `lnd.conf`. We recommend going through this process at least once to familiarize yourself with the security and authentication features around lnd.
 
-We will test our rpc connection to the Alice node. Notice that in the following command we specify the --rpcserver here, which corresponds to --rpcport=10001 that we set when starting the Alice lnd node.
+We will test our rpc connection to the Alice node. Notice that in the following command we specify the `--rpcserver` here, which corresponds to `--rpcport=10001` that we set when starting the Alice lnd node.
 
-Open up a new terminal window, set $GOPATH and include $GOPATH/bin in your PATH as usual. Let’s create Alice’s wallet and set her passphrase:
+Open up a new terminal window, set `$GOPATH` and include `$GOPATH/bin` in your `PATH` as usual. Let’s create Alice’s wallet and set her passphrase:
 
+```
 cd $GOPATH/dev/alice
 alice$ lncli --rpcserver=localhost:10001 --macaroonpath=data/chain/bitcoin/simnet/admin.macaroon create
+```
+
 You’ll be asked to input and confirm a wallet password for Alice, which must be longer than 8 characters. You also have the option to add a passphrase to your cipher seed. For now, just skip this step by entering “n” when prompted about whether you have an existing mnemonic, and pressing enter to proceed without the passphrase.
 
 You can now request some basic information as follows:
 
+```
 alice$ lncli --rpcserver=localhost:10001 --macaroonpath=data/chain/bitcoin/simnet/admin.macaroon getinfo
+```
 lncli just made an RPC call to the Alice lnd node. This is a good way to test if your nodes are up and running and lncli is functioning properly. Note that in future sessions you may need to call lncli unlock to unlock the node with the password you just set.
 
 Open up new terminal windows and do the same for Bob and Charlie. alice$ or bob$ denotes running the command from the Alice or Bob lncli window respectively.
 
+```
 # In a new terminal window, setting $GOPATH, etc.
 cd $GOPATH/dev/bob
 bob$ lncli --rpcserver=localhost:10002 --macaroonpath=data/chain/bitcoin/simnet/admin.macaroon create
@@ -192,40 +198,48 @@ bob$ lncli --rpcserver=localhost:10002 --macaroonpath=data/chain/bitcoin/simnet/
 cd $GOPATH/dev/charlie
 charlie$ lncli --rpcserver=localhost:10003 --macaroonpath=data/chain/bitcoin/simnet/admin.macaroon create
 # Note that you'll have to enter an 8+ character password and "n" for the mnemonic.
-To avoid typing the --rpcserver=localhost:1000X and --macaroonpath flag every time, we can set some aliases. Add the following to your .bashrc:
+```
+To avoid typing the `--rpcserver=localhost:1000X` and `--macaroonpath` flag every time, we can set some aliases. Add the following to your `.bashrc`:
 
+```
 alias lncli-alice="lncli --rpcserver=localhost:10001 --macaroonpath=data/chain/bitcoin/simnet/admin.macaroon"
 alias lncli-bob="lncli --rpcserver=localhost:10002 --macaroonpath=data/chain/bitcoin/simnet/admin.macaroon"
 alias lncli-charlie="lncli --rpcserver=localhost:10003 --macaroonpath=data/chain/bitcoin/simnet/admin.macaroon"
-To make sure this was applied to all of your current terminal windows, rerun your .bashrc file:
+```
 
+To make sure this was applied to all of your current terminal windows, rerun your `.bashrc` file:
+
+```
 alice$ source ~/.bashrc
 bob$ source ~/.bashrc
 charlie$ source ~/.bashrc
+```
 For simplicity, the rest of the tutorial will assume that this step was complete.
 
-lncli options
+### lncli options
 To see all the commands available for lncli, simply type lncli --help or lncli -h.
 
-Setting up Bitcoin addresses
+## Setting up Bitcoin addresses
 Let’s create a new Bitcoin address for Alice. This will be the address that stores Alice’s on-chain balance. np2wkh specifes the type of address and stands for Pay to Nested Witness Key Hash.
 
+```
 alice$ lncli-alice newaddress np2wkh
 {
     "address": <ALICE_ADDRESS>
 }
+```
 And for Bob and Charlie:
-
+```
 bob$ lncli-bob newaddress np2wkh
 {
     "address": <BOB_ADDRESS>
 }
-
 charlie$ lncli-charlie newaddress np2wkh
 {
     "address": <CHARLIE_ADDRESS>
 }
-Funding Alice
+```
+## Funding Alice
 That’s a lot of configuration! At this point, we’ve generated onchain addresses for Alice, Bob, and Charlie. Now, we will get some practice working with btcd and fund these addresses with some simnet Bitcoin.
 
 Quit btcd and re-run it, setting Alice as the recipient of all mining rewards:
