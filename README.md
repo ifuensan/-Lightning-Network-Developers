@@ -489,7 +489,7 @@ bob$ lncli-bob walletbalance
 ```
 At this point, you’ve learned how to work with btcd, btcctl, lnd, and lncli. In Stage 2, we will learn how to set up and interact with lnd using a web GUI client.
 
-In the future, you can try running through this workflow on testnet instead of simnet, where you can interact with and send payments through the testnet Lightning Faucet node. For more information, see the “Connect to faucet lightning node” section in the Docker guide or check out the Lightning Network faucet repository.
+In the future, you can try running through this workflow on testnet instead of simnet, where you can interact with and send payments through the testnet Lightning Faucet node. For more information, see the “Connect to faucet lightning node” section in the [Docker guide](https://dev.lightning.community/guides/docker/) or check out the [Lightning Network faucet repository](https://github.com/lightninglabs/lightning-faucet).
 
 ### Navigation
 [Proceed to Stage 2 - Web Client](https://dev.lightning.community/tutorial/02-web-client)
