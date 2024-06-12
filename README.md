@@ -706,6 +706,7 @@ cd $GOPATH/dev/charlie
 charlie$ lncli --rpcserver=localhost:10003 --macaroonpath=data/chain/bitcoin/simnet/admin.macaroon create
 # Ten en cuenta que tendrás que introducir una contraseña de 8+ caracteres y "n" para la mnemotecnia.
 ```
+
 Para evitar escribir la bandera `--rpcserver=localhost:1000X` y `--macaroonpath` cada vez, podemos establecer algunos alias. Añade lo siguiente a tu `.bashrc`:
 
 ```
@@ -746,6 +747,7 @@ charlie$ lncli-charlie newaddress np2wkh
     "address": <DIRECCION_CHARLIE>
 }
 ```
+
 ## Financiando a Alice
 ¡Eso es mucha configuración! En este punto, hemos generado direcciones en cadena para Alice, Bob y Charlie. Ahora, practicaremos trabajar con btcd y financiaremos estas direcciones con algunos Bitcoin de simnet.
 
