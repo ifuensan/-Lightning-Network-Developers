@@ -743,44 +743,48 @@ charlie$ lncli-charlie newaddress np2wkh
     "address": <DIRECCION_CHARLIE>
 }
 ```
-## Funding Alice
-That’s a lot of configuration! At this point, we’ve generated onchain addresses for Alice, Bob, and Charlie. Now, we will get some practice working with btcd and fund these addresses with some simnet Bitcoin.
+## Financiando a Alice
+¡Eso es mucha configuración! En este punto, hemos generado direcciones en cadena para Alice, Bob y Charlie. Ahora, practicaremos trabajar con btcd y financiaremos estas direcciones con algunos Bitcoin de simnet.
 
-Quit btcd and re-run it, setting Alice as the recipient of all mining rewards:
+Cierra btcd y vuelve a ejecutarlo, estableciendo a Alice como la receptora de todas las recompensas de minería:
 
-`btcd --simnet --txindex --rpcuser=kek --rpcpass=kek --miningaddr=<ALICE_ADDRESS>`
-Generate 400 blocks, so that Alice gets the reward. We need at least 100 blocks because coinbase funds can’t be spent until after 100 confirmations, and we need about 300 to activate segwit. In a new window with $GOPATH and $PATH set:
+`btcd --simnet --txindex --rpcuser=kek --rpcpass=kek --miningaddr=<DIRECCION_ALICE>`
+Genera 400 bloques, para que Alice obtenga la recompensa. Necesitamos al menos 100 bloques porque los fondos de coinbase no se pueden gastar hasta después de 100 confirmaciones, y necesitamos alrededor de 300 para activar segwit. En una nueva ventana con $GOPATH y $PATH establecidos:
 
 `alice$ btcctl --simnet --rpcuser=kek --rpcpass=kek generate 400`
-Check that segwit is active:
+Verifica que segwit está activo:
 
 `btcctl --simnet --rpcuser=kek --rpcpass=kek getblockchaininfo | grep -A 1 segwit`
-Check Alice’s wallet balance.
+Verifica el saldo de la billetera de Alice.
 
 `alice$ lncli-alice walletbalance`
-It’s no fun if only Alice has money. Let’s give some to Charlie as well.
+No es divertido si solo Alice tiene dinero. Vamos a darle algo a Charlie también.
 
 ```
-# Quit the btcd process that was previously started with Alice's mining address,
-# and then restart it with:
-btcd --txindex --simnet --rpcuser=kek --rpcpass=kek --miningaddr=<CHARLIE_ADDRESS>
+# Cierra el proceso btcd que se inició anteriormente con la dirección de minería de Alice,
+# y luego reinícialo con:
+btcd --txindex --simnet
 
-# Generate more blocks
+ --
+
+rpcuser=kek --rpcpass=kek --miningaddr=<DIRECCION_CHARLIE>
+
+# Genera más bloques
 btcctl --simnet --rpcuser=kek --rpcpass=kek generate 100
 
-# Check Charlie's balance
+# Verifica el saldo de Charlie
 charlie$ lncli-charlie walletbalance
 ```
-### Creating the P2P Network
-Now that Alice and Charlie have some simnet Bitcoin, let’s start connecting them together.
+### Creando la Red P2P
+Ahora que Alice y Charlie tienen algunos Bitcoin de simnet, comencemos a conectarlos.
 
-Connect Alice to Bob:
+Conecta a Alice con Bob:
 
 ```
-# Get Bob's identity pubkey:
+# Obtén la clave pública de identidad de Bob:
 bob$ lncli-bob getinfo
 {
---->"identity_pubkey": <BOB_PUBKEY>,
+--->"identity_pubkey": <CLAVE_PUBLICA_BOB>,
     "alias": "",
     "num_pending_channels": 0,
     "num_active_channels": 0,
@@ -798,22 +802,22 @@ bob$ lncli-bob getinfo
     "version":  "0.4.2-beta commit=7a5a824d179c6ef16bd78bcb7a4763fda5f3f498"
 }
 
-# Connect Alice and Bob together
-alice$ lncli-alice connect <BOB_PUBKEY>@localhost:10012
+# Conecta a Alice y Bob
+alice$ lncli-alice connect <CLAVE_PUBLICA_BOB>@localhost:10012
 {
 
 }
 ```
-Notice that `localhost:10012` corresponds to the `--listen=localhost:10012` flag we set when starting the Bob lnd node.
+Observa que `localhost:10012` corresponde a la bandera `--listen=localhost:10012` que establecimos al iniciar el nodo lnd de Bob.
 
-Let’s check that Alice and Bob are now aware of each other.
+Verifiquemos que Alice y Bob ahora se conocen entre sí.
 ```
-# Check that Alice has added Bob as a peer:
+# Verifica que Alice ha agregado a Bob como un par:
 alice$ lncli-alice listpeers
 {
     "peers": [
         {
-            "pub_key": <BOB_PUBKEY>,
+            "pub_key": <CLAVE_PUBLICA_BOB>,
             "address": "127.0.0.1:10012",
             "bytes_sent": "7",
             "bytes_recv": "7",
@@ -825,12 +829,12 @@ alice$ lncli-alice listpeers
     ]
 }
 
-# Check that Bob has added Alice as a peer:
+# Verifica que Bob ha agregado a Alice como un par:
 bob$ lncli-bob listpeers
 {
     "peers": [
         {
-            "pub_key": <ALICE_PUBKEY>,
+            "pub_key": <CLAVE_PUBLICA_ALICE>,
             "address": "127.0.0.1:60104",
             "bytes_sent": "318",
             "bytes_recv": "318",
@@ -842,21 +846,21 @@ bob$ lncli-bob listpeers
     ]
 }
 ```
-Finish up the P2P network by connecting Bob to Charlie:
+Termina la red P2P conectando a Bob con Charlie:
 
-`charlie$ lncli-charlie connect <BOB_PUBKEY>@localhost:10012`
+`charlie$ lncli-charlie connect <CLAVE_PUBLICA_BOB>@localhost:10012`
 
-### Setting up Lightning Network
-Before we can send payment, we will need to set up payment channels from Alice to Bob, and Bob to Charlie.
+### Configurando la Red Lightning
+Antes de poder enviar un pago, necesitaremos configurar los canales de pago de Alice a Bob, y de Bob a Charlie.
 
-First, let’s open the Alice<–>Bob channel.
+Primero, abramos el canal Alice<–>Bob.
 
 `alice$ lncli-alice openchannel --node_key=<BOB_PUBKEY> --local_amt=1000000
---local_amt` specifies the amount of money that Alice will commit to the channel. To see the full list of options, you can try lncli openchannel `--help`.
-We now need to mine six blocks so that the channel is considered valid:
+--local_amt` especifica la cantidad de dinero que Alice comprometerá al canal. Para ver la lista completa de opciones, puedes probar lncli openchannel `--help`.
+Ahora necesitamos minar seis bloques para que el canal se considere válido:
 
 `btcctl --simnet --rpcuser=kek --rpcpass=kek generate 6`
-Check that Alice<–>Bob channel was created:
+Verifica que se creó el canal Alice<–>Bob:
 
 ```
 alice$ lncli-alice listchannels
@@ -886,10 +890,10 @@ alice$ lncli-alice listchannels
 }
 ```
 
-Sending single hop payments
-Finally, to the exciting part - sending payments! Let’s send a payment from Alice to Bob.
+Enviando pagos de un solo salto
+Finalmente, a la parte emocionante: ¡enviar pagos! Enviemos un pago de Alice a Bob.
 
-First, Bob will need to generate an invoice:
+Primero, Bob necesitará generar una factura:
 
 ```
 bob$ lncli-bob addinvoice --amt=10000
@@ -899,7 +903,7 @@ bob$ lncli-bob addinvoice --amt=10000
         "add_index": 1
 }
 ```
-Send the payment from Alice to Bob:
+Envía el pago de Alice a Bob:
 
 ```
 alice$ lncli-alice sendpayment --pay_req=<encoded_invoice>
@@ -922,12 +926,13 @@ alice$ lncli-alice sendpayment --pay_req=<encoded_invoice>
 	}
 }
 
-# Check that Alice's channel balance was decremented accordingly:
+# Verifica que el saldo del canal de Alice se decrementó en consecuencia:
 alice$ lncli-alice listchannels
 
-# Check that Bob's channel was credited with the payment amount:
+# Verifica que el canal de Bob fue acreditado con la cantidad del pago:
 bob$ lncli-bob listchannels
 ```
+
 ## Multi-hop payments
 Now that we know how to send single-hop payments, sending multi hop payments is not that much more difficult. Let’s set up a channel from Bob<–>Charlie:
 
