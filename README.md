@@ -531,11 +531,12 @@ lnd es el componente principal con el que interactuaremos. lnd significa Lightni
 Ejecutar un nodo lnd significa que está escuchando pagos, observando la cadena de bloques, etc. De forma predeterminada, está esperando la entrada del usuario.
 
 lncli es el cliente de línea de comando que se utiliza para interactuar con sus nodos lnd. Normalmente, cada nodo lnd se ejecutará en su propia ventana de terminal, de modo que pueda ver las salidas de sus registros. Por lo tanto, los comandos lncli se ejecutan desde una ventana de terminal diferente.
+
 ### BTCD
 
-btcd represents the gateway that lnd nodes will use to interact with the Bitcoin / Litecoin network. lnd needs btcd for creating on-chain addresses or transactions, watching the blockchain for updates, and opening/closing channels. In our current schema, all three of the nodes are connected to the same btcd instance. In a more realistic scenario, each of the lnd nodes will be connected to their own instances of btcd or equivalent.
+btcd representa la puerta de enlace que los nodos lnd utilizarán para interactuar con la red de Bitcoin / Litecoin. lnd necesita btcd para crear direcciones o transacciones en la cadena, observar la cadena de bloques para actualizaciones, y abrir/cerrar canales. En nuestro esquema actual, los tres nodos están conectados a la misma instancia de btcd. En un escenario más realista, cada uno de los nodos lnd estará conectado a sus propias instancias de btcd o equivalente.
 
-We will also be using simnet instead of testnet. Simnet is a development/test network run locally that allows us to generate blocks at will, so we can avoid the time-consuming process of waiting for blocks to arrive for any on-chain functionality.
+También estaremos utilizando simnet en lugar de testnet. Simnet es una red de desarrollo/prueba que se ejecuta localmente y nos permite generar bloques a voluntad, por lo que podemos evitar el proceso que consume tiempo de esperar la llegada de bloques para cualquier funcionalidad en la cadena.
 
 ## Configurando nuestro entorno
 
