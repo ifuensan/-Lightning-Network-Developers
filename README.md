@@ -933,25 +933,25 @@ alice$ lncli-alice listchannels
 bob$ lncli-bob listchannels
 ```
 
-## Multi-hop payments
-Now that we know how to send single-hop payments, sending multi hop payments is not that much more difficult. Let’s set up a channel from Bob<–>Charlie:
+## Pagos Multi-salto
+Ahora que sabemos cómo enviar pagos de un solo salto, enviar pagos de múltiples saltos no es mucho más difícil. Configuraremos un canal de Bob<–>Charlie:
 
 ```
 charlie$ lncli-charlie openchannel --node_key=<BOB_PUBKEY> --local_amt=800000 --push_amt=200000
 
-# Mine the channel funding tx
+# Minar la transacción de financiamiento del canal
 btcctl --simnet --rpcuser=kek --rpcpass=kek generate 6
 ```
 
-Note that this time, we supplied the `--push_amt` argument, which specifies the amount of money we want the other party to have at the first channel state.
+Nota que esta vez, proporcionamos el argumento `--push_amt`, que especifica la cantidad de dinero que queremos que la otra parte tenga en el primer estado del canal.
 
-Let’s make a payment from Alice to Charlie by routing through Bob:
+Hagamos un pago de Alice a Charlie a través de Bob:
 ```
 charlie$ lncli-charlie addinvoice --amt=10000
 alice$ lncli-alice sendpayment --pay_req=<encoded_invoice>
 
-# Check that Charlie's channel was credited with the payment amount (e.g. that
-# the `remote_balance` has been decremented by 10000)
+# Verifica que el canal de Charlie fue acreditado con la cantidad del pago (por ejemplo, que
+# el `remote_balance` ha sido decrementado por 10000)
 charlie$ lncli-charlie listchannels
 ```
 
