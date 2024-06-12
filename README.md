@@ -955,8 +955,8 @@ alice$ lncli-alice sendpayment --pay_req=<encoded_invoice>
 charlie$ lncli-charlie listchannels
 ```
 
-### Closing channels
-For practice, let’s try closing a channel. We will reopen it in the next stage of the tutorial.
+### Cerrando canales
+Para practicar, intentemos cerrar un canal. Lo volveremos a abrir en la siguiente etapa del tutorial.
 
 ```
 alice$ lncli-alice listchannels
@@ -978,17 +978,17 @@ alice$ lncli-alice listchannels
     ]
 }
 ```
-The Channel point consists of two numbers separated by a colon, which uniquely identifies the channel. The first number is funding_txid and the second number is output_index.
+El punto del canal consta de dos números separados por dos puntos, que identifican de manera única el canal. El primer número es funding_txid y el segundo número es output_index.
 
 ```
-# Close the Alice<-->Bob channel from Alice's side.
+# Cierra el canal Alice<-->Bob desde el lado de Alice.
 alice$ lncli-alice closechannel --funding_txid=<funding_txid> --output_index=<output_index>
 
-# Mine a block including the channel close transaction to close the channel:
+# Minar un bloque que incluye la transacción de cierre del canal para cerrar el canal:
 btcctl --simnet --rpcuser=kek --rpcpass=kek generate 1
 
-# Check that Bob's on-chain balance was credited by his settled amount in the
-# channel. Recall that Bob previously had no on-chain Bitcoin:
+# Verifica que el saldo en cadena de Bob fue acreditado por su cantidad liquidada en el
+# canal. Recuerda que Bob anteriormente no tenía Bitcoin en cadena:
 bob$ lncli-bob walletbalance
 {
     "total_balance": "20001",
@@ -996,14 +996,13 @@ bob$ lncli-bob walletbalance
     "unconfirmed_balance": "0"
 }
 ```
-At this point, you’ve learned how to work with btcd, btcctl, lnd, and lncli. In Stage 2, we will learn how to set up and interact with lnd using a web GUI client.
+En este punto, has aprendido cómo trabajar con btcd, btcctl, lnd y lncli. En la Etapa 2, aprenderemos cómo configurar e interactuar con lnd utilizando un cliente GUI web.
 
-In the future, you can try running through this workflow on testnet instead of simnet, where you can interact with and send payments through the testnet Lightning Faucet node. For more information, see the “Connect to faucet lightning node” section in the [Docker guide](https://dev.lightning.community/guides/docker/) or check out the [Lightning Network faucet repository](https://github.com/lightninglabs/lightning-faucet).
+En el futuro, puedes intentar ejecutar este flujo de trabajo en testnet en lugar de simnet, donde puedes interactuar y enviar pagos a través del nodo Lightning Faucet de testnet. Para obtener más información, consulta la sección "Conectar al nodo lightning de la faucet" en la [Guía de Docker](https://dev.lightning.community/guides/docker/) o consulta el [repositorio de la faucet de la Red Lightning](https://github.com/lightninglabs/lightning-faucet).
 
-### Navigation
-[Proceed to Stage 2 - Web Client](https://dev.lightning.community/tutorial/02-web-client)
-[Return to main tutorial page](https://dev.lightning.community/tutorial/)
+### Navegación
+[Pasa a la Etapa 2 - Cliente Web](https://dev.lightning.community/tutorial/02-web-client)
+[Vuelve a la página principal de tu tutorial](https://dev.lightning.community/tutorial/)
 
-### Questions
-Join the #dev-help channel on our [Community Slack](https://join.slack.com/t/lightningcommunity/shared_invite/enQtMzQ0OTQyNjE5NjU1LWRiMGNmOTZiNzU0MTVmYzc1ZGFkZTUyNzUwOGJjMjYwNWRkNWQzZWE3MTkwZjdjZGE5ZGNiNGVkMzI2MDU4ZTE)
-Join IRC: [Irc](https://webchat.freenode.net/?channels=lnd)
+### Preguntas
+Únete al canal #dev-help en nuestro [Slack de la Comunidad](https://join.slack.com/t/lightningcommunity/shared_invite/enQtMzQ0OTQyNjE5NjU1LWRiMGNmOTZiNzU0MTVmYzc1ZGFkZTUyNzUwOGJjMjYwNWRkNWQzZWE3MTkwZjdjZGE5ZGNiNGVkMzI2MDU4ZTE) Únete al IRC: [Irc](https://webchat.freenode.net/?channels=lnd)
