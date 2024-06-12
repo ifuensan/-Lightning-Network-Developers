@@ -780,6 +780,7 @@ btcctl --simnet --rpcuser=kek --rpcpass=kek generate 100
 # Verifica el saldo de Charlie
 charlie$ lncli-charlie walletbalance
 ```
+
 ### Creando la Red P2P
 Ahora que Alice y Charlie tienen algunos Bitcoin de simnet, comencemos a conectarlos.
 
