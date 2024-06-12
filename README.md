@@ -1006,3 +1006,5 @@ En el futuro, puedes intentar ejecutar este flujo de trabajo en testnet en lugar
 
 ### Preguntas
 Únete al canal #dev-help en nuestro [Slack de la Comunidad](https://join.slack.com/t/lightningcommunity/shared_invite/enQtMzQ0OTQyNjE5NjU1LWRiMGNmOTZiNzU0MTVmYzc1ZGFkZTUyNzUwOGJjMjYwNWRkNWQzZWE3MTkwZjdjZGE5ZGNiNGVkMzI2MDU4ZTE) Únete al IRC: [Irc](https://webchat.freenode.net/?channels=lnd)
+
+*Nota:* La página original está [aquí](https://dev.lightning.community/tutorial/01-lncli/)
