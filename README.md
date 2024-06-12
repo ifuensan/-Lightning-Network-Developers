@@ -690,6 +690,7 @@ Ahora puedes solicitar información básica de la siguiente manera:
 ```
 alice$ lncli --rpcserver=localhost:10001 --macaroonpath=data/chain/bitcoin/simnet/admin.macaroon getinfo
 ```
+
 lncli acaba de hacer una llamada RPC al nodo lnd de Alice. Esta es una buena manera de probar si tus nodos están en funcionamiento y lncli está funcionando correctamente. Ten en cuenta que en futuras sesiones es posible que necesites llamar a lncli unlock para desbloquear el nodo con la contraseña que acabas de establecer.
 
 Abre nuevas ventanas de terminal y haz lo mismo para Bob y Charlie. alice$ o bob$ denota la ejecución del comando desde la ventana lncli de Alice o Bob respectivamente.
