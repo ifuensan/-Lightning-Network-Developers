@@ -537,21 +537,22 @@ btcd represents the gateway that lnd nodes will use to interact with the Bitcoin
 
 We will also be using simnet instead of testnet. Simnet is a development/test network run locally that allows us to generate blocks at will, so we can avoid the time-consuming process of waiting for blocks to arrive for any on-chain functionality.
 
-## Setting up our environment
+## Configurando nuestro entorno
 
-Developing on lnd can be quite complex since there are many more moving pieces, so to simplify that process, we will walk through a recommended workflow.
+Desarrollar en lnd puede ser bastante complejo ya que hay muchas más piezas móviles, por lo que para simplificar ese proceso, vamos a repasar un flujo de trabajo recomendado.
 
-### Running btcd
+### Ejecutando btcd
 
-Let’s start by running btcd, if you don’t have it up already. Open up a new terminal window, ensure you have your $GOPATH set, and run:
+Comencemos ejecutando btcd, si aún no lo tienes en funcionamiento. Abre una nueva ventana de terminal, asegúrate de tener configurado tu $GOPATH, y ejecuta:
 
+```
 btcd --txindex --simnet --rpcuser=kek --rpcpass=kek
+```
 
-(Note: this tutorial requires opening quite a few terminal windows. It may be convenient to use multiplexers such as tmux or screen if you’re familiar with them.)
+(Nota: este tutorial requiere abrir bastantes ventanas de terminal. Puede ser conveniente usar multiplexores como tmux o screen si estás familiarizado con ellos.)
 
-Breaking down the components:
+Desglosando los componentes:
 
-    --txindex is required so that the lnd client is able to query historical transactions from btcd.
-    --simnet specifies that we are using the simnet network. This can be changed to --testnet, or omitted entirely to connect to the actual Bitcoin / Litecoin network.
-    --rpcuser and rpcpass sets a default password for authenticating to the btcd instance.
-
+    `--txindex` es necesario para que el cliente lnd pueda consultar transacciones históricas desde btcd.
+    `--simnet` especifica que estamos usando la red simnet. Esto puede cambiarse a `--testnet`, o omitirse por completo para conectarse a la red real de Bitcoin / Litecoin.
+    `--rpcuser` y `--rpcpass` establecen una contraseña predeterminada para autenticarse en la instancia de btcd.
