@@ -622,6 +622,7 @@ Ten en cuenta que para cada ventana de terminal adicional que configures, necesi
 export GOPATH=~/gocode # si seguiste exactamente la guía de instalación
 export PATH=$PATH:$GOPATH/bin
 ```
+
 y ejecútalo cada vez que inicies una nueva ventana de terminal trabajando en lnd.
 
 Ejecuta Bob y Charlie:
